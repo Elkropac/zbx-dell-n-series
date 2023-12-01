@@ -957,6 +957,9 @@ zabbix_export:
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU usage high'
               opdata: 'Dell N-Series: Process {#SNMPVALUE}: CPU usage: {ITEM.LASTVALUE2}'
               priority: AVERAGE
+              dependencies:
+                - name: 'Dell N-Series: No SNMP data collection'
+                  expression: 'max(/Dell N-Series by SNMP/zabbix[host,snmp,available],{$SNMP.TIMEOUT})=0'
           graph_prototypes:
             - uuid: eeed75716f0f4f3a8d4e5ba1ef050cd3
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU Usage'
@@ -1917,6 +1920,9 @@ zabbix_export:
       event_name: 'Dell N-Series: CPU usage over {$CPU.UTIL.CRIT}'
       opdata: 'Dell N-Series CPU usage: {ITEM.LASTVALUE2}'
       priority: AVERAGE
+      dependencies:
+        - name: 'Dell N-Series: No SNMP data collection'
+          expression: 'max(/Dell N-Series by SNMP/zabbix[host,snmp,available],{$SNMP.TIMEOUT})=0'
     - uuid: 8beecbf747ca484686b384021ff3c83f
       expression: '(last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])>0 and last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])<10m) or (last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])=0 and last(/Dell N-Series by SNMP/system.net.uptime[sysUpTime.0])<10m)'
       name: 'Dell N-Series: Host has been restarted'
