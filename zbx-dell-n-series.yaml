@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2023-12-01T15:04:43Z'
+  date: '2023-12-01T15:19:52Z'
   groups:
     - uuid: 36bff6c29af64692839d077febfc7079
       name: 'Templates/Network devices'
@@ -64,6 +64,9 @@ zabbix_export:
           key: 'system.cpu.usage.avg1m[system]'
           history: 7d
           units: '%'
+          tags:
+            - tag: component
+              value: cpu
         - uuid: 557166e48fe8445b8f656143dd996503
           name: 'Dell N-Series: CPU usage 5m'
           type: SNMP_AGENT
@@ -71,6 +74,9 @@ zabbix_export:
           key: 'system.cpu.usage.avg5m[system]'
           history: 7d
           units: '%'
+          tags:
+            - tag: component
+              value: cpu
         - uuid: b74bfa4798d2449eaa36e24b5e8ef290
           name: 'Dell N-Series: CPU usage 5s'
           type: SNMP_AGENT
@@ -78,6 +84,9 @@ zabbix_export:
           key: 'system.cpu.usage.avg5s[system]'
           history: 7d
           units: '%'
+          tags:
+            - tag: component
+              value: cpu
         - uuid: 5af30457e04148549101b6eb079c34ed
           name: 'Dell N-Series: CPU usage'
           type: SNMP_AGENT
@@ -86,6 +95,9 @@ zabbix_export:
           history: 7d
           trends: '0'
           value_type: CHAR
+          tags:
+            - tag: component
+              value: cpu
         - uuid: e7bbe4dc585f4cfaa0ef353a725187ee
           name: 'Dell N-Series: System description'
           type: SNMP_AGENT
@@ -932,18 +944,33 @@ zabbix_export:
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.8.1.5.{#SNMPINDEX}'
               key: 'system.cpu.usage.avg1m[process,{#SNMPINDEX}]'
               units: '%'
+              tags:
+                - tag: component
+                  value: cpu
+                - tag: name
+                  value: '{#SNMPVALUE}'
             - uuid: 69bdf8cd80ba458ebe9e3913f9dfa4d4
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU usage 5m'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.8.1.6.{#SNMPINDEX}'
               key: 'system.cpu.usage.avg5m[process,{#SNMPINDEX}]'
               units: '%'
+              tags:
+                - tag: component
+                  value: cpu
+                - tag: name
+                  value: '{#SNMPVALUE}'
             - uuid: a69502054c2b42f3b658ef59808501af
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU usage 5s'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.8.1.4.{#SNMPINDEX}'
               key: 'system.cpu.usage.avg5s[process,{#SNMPINDEX}]'
               units: '%'
+              tags:
+                - tag: component
+                  value: cpu
+                - tag: name
+                  value: '{#SNMPVALUE}'
             - uuid: 960bc008c73f4ef69f6615ad28c25359
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU usage'
               type: SNMP_AGENT
@@ -951,6 +978,11 @@ zabbix_export:
               key: 'system.cpu.usage[process,{#SNMPINDEX}]'
               trends: '0'
               value_type: CHAR
+              tags:
+                - tag: component
+                  value: cpu
+                - tag: name
+                  value: '{#SNMPVALUE}'
           trigger_prototypes:
             - uuid: a5f8c495586d407e90d467ad0d252e48
               expression: 'last(/Dell N-Series by SNMP/system.cpu.usage.avg5m[process,{#SNMPINDEX}])>{$CPU.UTIL.CRIT} and length(last(/Dell N-Series by SNMP/system.cpu.usage[process,{#SNMPINDEX}]))>0'
@@ -960,6 +992,11 @@ zabbix_export:
               dependencies:
                 - name: 'Dell N-Series: No SNMP data collection'
                   expression: 'max(/Dell N-Series by SNMP/zabbix[host,snmp,available],{$SNMP.TIMEOUT})=0'
+              tags:
+                - tag: scope
+                  value: capacity
+                - tag: scope
+                  value: performance
           graph_prototypes:
             - uuid: eeed75716f0f4f3a8d4e5ba1ef050cd3
               name: 'Dell N-Series: Process {#SNMPVALUE}: CPU Usage'
@@ -1923,6 +1960,11 @@ zabbix_export:
       dependencies:
         - name: 'Dell N-Series: No SNMP data collection'
           expression: 'max(/Dell N-Series by SNMP/zabbix[host,snmp,available],{$SNMP.TIMEOUT})=0'
+      tags:
+        - tag: scope
+          value: capacity
+        - tag: scope
+          value: performance
     - uuid: 8beecbf747ca484686b384021ff3c83f
       expression: '(last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])>0 and last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])<10m) or (last(/Dell N-Series by SNMP/system.hw.uptime[hrSystemUptime.0])=0 and last(/Dell N-Series by SNMP/system.net.uptime[sysUpTime.0])<10m)'
       name: 'Dell N-Series: Host has been restarted'
