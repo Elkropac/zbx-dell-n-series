@@ -310,30 +310,50 @@ zabbix_export:
         - uuid: d1b051fd8461465c9b3978d59e0fc805
           name: 'FAN Discovery'
           type: SNMP_AGENT
-          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.6027.3.10.1.2.4.1.1]'
+          snmp_oid: 'discovery[{#UNIT},1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.6.1.6,{#FAN},1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.6.1.1]'
           key: fan.discovery
           delay: 1h
-          status: DISABLED
           item_prototypes:
-            - uuid: fb1ff63994314b6ea9590ca4eef8b0cf
-              name: 'Fan {#SNMPVALUE}: Fan status'
+            - uuid: e69d059676334f6eadbdf11165668b4d
+              name: 'Fan: Unit {#UNIT} Fan {#FAN}: duty level'
               type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.6027.3.10.1.2.4.1.2.{#SNMPINDEX}'
-              key: 'sensor.fan.status[chSysFanTrayOperStatus.{#SNMPINDEX}]'
+              snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.6.1.5.{#SNMPINDEX}'
+              key: 'sensor.fan.dutylevel[boxServicesFanDutyLevel.{#SNMPINDEX}]'
               delay: 3m
               history: 7d
               trends: '0'
-              description: |
-                MIB: F10-S-SERIES-CHASSIS-MIB
-                The status of the fan tray {#SNMPVALUE}.
+              units: '%'
+              tags:
+                - tag: component
+                  value: fan
+            - uuid: dd201210e72b4332bca41b688d38a03a
+              name: 'Fan: Unit {#UNIT} Fan {#FAN}: speed'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.6.1.4.{#SNMPINDEX}'
+              key: 'sensor.fan.speed[boxServicesFanSpeed.{#SNMPINDEX}]'
+              delay: 3m
+              history: 7d
+              trends: '0'
+              units: RPM
+              tags:
+                - tag: component
+                  value: fan
+            - uuid: fb1ff63994314b6ea9590ca4eef8b0cf
+              name: 'Fan: Unit {#UNIT} Fan {#FAN}: state'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.6.1.3.{#SNMPINDEX}'
+              key: 'sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}]'
+              delay: 3m
+              history: 7d
+              trends: '0'
               valuemap:
-                name: 'F10-S-SERIES-CHASSIS-MIB::chSysFanTrayOperStatus'
+                name: 'fastpath_boxservices::boxServicesFanItemState'
               tags:
                 - tag: component
                   value: fan
               trigger_prototypes:
                 - uuid: fd2b440f7eb44af3af77f0fa47685174
-                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.status[chSysFanTrayOperStatus.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
+                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
                   name: 'Fan {#SNMPVALUE}: Fan is in critical state'
                   opdata: 'Current state: {ITEM.LASTVALUE1}'
                   priority: AVERAGE
@@ -344,14 +364,14 @@ zabbix_export:
                     - tag: scope
                       value: performance
                 - uuid: 9c382a2910524f0596f99396c2c2329b
-                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.status[chSysFanTrayOperStatus.{#SNMPINDEX}],#1,"ne","{$FAN_OK_STATUS}")=1'
+                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"ne","{$FAN_OK_STATUS}")=1'
                   name: 'Fan {#SNMPVALUE}: Fan is not in normal state'
                   opdata: 'Current state: {ITEM.LASTVALUE1}'
                   priority: INFO
                   description: 'Please check the fan unit'
                   dependencies:
                     - name: 'Fan {#SNMPVALUE}: Fan is in critical state'
-                      expression: 'count(/Dell N-Series by SNMP/sensor.fan.status[chSysFanTrayOperStatus.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
+                      expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
                   tags:
                     - tag: scope
                       value: notice
