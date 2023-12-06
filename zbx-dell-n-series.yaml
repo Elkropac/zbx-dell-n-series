@@ -1405,6 +1405,57 @@ zabbix_export:
               newvalue: down
             - value: '3'
               newvalue: absent
+        - uuid: f772e784b40c4cdc9aad95207717fd86
+          name: 'fastpath_boxservices::boxServicesFanItemState'
+          mappings:
+            - value: '1'
+              newvalue: notpresent
+            - value: '2'
+              newvalue: operational
+            - value: '3'
+              newvalue: failed
+            - value: '4'
+              newvalue: powering
+            - value: '5'
+              newvalue: nopower
+            - value: '6'
+              newvalue: notpowering
+            - value: '7'
+              newvalue: incompatible
+        - uuid: e3f7c6f2c1a24efa840e212e406fc92a
+          name: 'fastpath_boxservices::boxServicesPowSypplyItemState'
+          mappings:
+            - value: '1'
+              newvalue: notpresent
+            - value: '2'
+              newvalue: operational
+            - value: '3'
+              newvalue: failed
+            - value: '4'
+              newvalue: powering
+            - value: '5'
+              newvalue: nopower
+            - value: '6'
+              newvalue: notpowering
+            - value: '7'
+              newvalue: incompatible
+        - uuid: b493f6616f614b3697afc3fba567c659
+          name: 'fastpath_boxservices::BoxsTemperatureStatus'
+          mappings:
+            - value: '0'
+              newvalue: low
+            - value: '1'
+              newvalue: normal
+            - value: '2'
+              newvalue: warning
+            - value: '3'
+              newvalue: critical
+            - value: '4'
+              newvalue: shutdown
+            - value: '5'
+              newvalue: 'not present'
+            - value: '6'
+              newvalue: 'not operational'
         - uuid: a034b883325a4df78283b7a20596dca4
           name: 'IF-MIB::ifOperStatus'
           mappings:
