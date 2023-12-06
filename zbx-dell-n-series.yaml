@@ -1041,33 +1041,30 @@ zabbix_export:
         - uuid: 868904226ed24fa09d40c12aa4c06a47
           name: 'PSU Discovery'
           type: SNMP_AGENT
-          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.6027.3.10.1.2.3.1.1]'
+          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.7.1.1,{#UNIT}, 1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.7.1.4]'
           key: psu.discovery
           delay: 1h
-          status: DISABLED
           description: 'A list of power supply residents in the S-series chassis.'
           item_prototypes:
             - uuid: 5c2e416f6a2d46a99652e66303f79f69
-              name: 'PSU {#SNMPVALUE}: Power supply status'
+              name: 'Power supply: Unit {#UNIT}: state'
               type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.6027.3.10.1.2.3.1.2.{#SNMPINDEX}'
-              key: 'sensor.psu.status[chSysPowerSupplyOperStatus.{#SNMPINDEX}]'
+              snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.7.1.3.{#SNMPINDEX}'
+              key: 'sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}]'
               delay: 3m
               history: 7d
               trends: '0'
-              description: |
-                MIB: F10-S-SERIES-CHASSIS-MIB
-                The status of the power supply {#SNMPVALUE}
               valuemap:
-                name: 'F10-S-SERIES-CHASSIS-MIB::chSysPowerSupplyOperStatus'
+                name: 'fastpath_boxservices::boxServicesPowSypplyItemState'
               tags:
                 - tag: component
                   value: power
               trigger_prototypes:
                 - uuid: 64f1474f06af48d8b57b4721a75529a4
-                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[chSysPowerSupplyOperStatus.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
+                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
                   name: 'PSU {#SNMPVALUE}: Power supply is in critical state'
                   opdata: 'Current state: {ITEM.LASTVALUE1}'
+                  discover: NO_DISCOVER
                   priority: AVERAGE
                   description: 'Please check the power supply unit for errors'
                   tags:
@@ -1076,14 +1073,15 @@ zabbix_export:
                     - tag: scope
                       value: performance
                 - uuid: 92de32d98e5441ce92ee7e8010e9e4b7
-                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[chSysPowerSupplyOperStatus.{#SNMPINDEX}],#1,"ne","{$PSU_OK_STATUS}")=1'
+                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"ne","{$PSU_OK_STATUS}")=1'
                   name: 'PSU {#SNMPVALUE}: Power supply is not in normal state'
                   opdata: 'Current state: {ITEM.LASTVALUE1}'
+                  discover: NO_DISCOVER
                   priority: INFO
                   description: 'Please check the power supply unit for errors'
                   dependencies:
                     - name: 'PSU {#SNMPVALUE}: Power supply is in critical state'
-                      expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[chSysPowerSupplyOperStatus.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
+                      expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
                   tags:
                     - tag: scope
                       value: notice
