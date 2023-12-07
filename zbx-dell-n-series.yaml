@@ -1161,18 +1161,40 @@ zabbix_export:
           lifetime: 7d
           item_prototypes:
             - uuid: 48901b8bf5bf41d6a21af241d807c33b
-              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: State'
+              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: state'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.8.1.4.{#SNMPINDEX}'
               key: 'sensor.tempSensor.state[boxServicesTempSensorState.{#SNMPINDEX}]'
               valuemap:
                 name: 'fastpath_boxservices::BoxsTemperatureStatus'
+              tags:
+                - tag: component
+                  value: temperature
             - uuid: bdf87089b2c34199b5303af6a1556882
-              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: Temperature'
+              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: temperature'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.8.1.5.{#SNMPINDEX}'
               key: 'sensor.tempSensor.temperature[boxServicesTempSensorTemperature.{#SNMPINDEX}]'
               units: C
+              tags:
+                - tag: component
+                  value: temperature
+          trigger_prototypes:
+            - uuid: 4e04d50256f9441a9aad59532b15542f
+              expression: 'count(/Dell N-Series by SNMP/sensor.tempSensor.state[boxServicesTempSensorState.{#SNMPINDEX}],#1,"ne","{$TEMP_OK_STATUS}")=1 and last(/Dell N-Series by SNMP/sensor.tempSensor.temperature[boxServicesTempSensorTemperature.{#SNMPINDEX}])>0'
+              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: state is not normal'
+              opdata: 'Current state: {ITEM.LASTVALUE1}, temperature: {ITEM.LASTVALUE2}'
+              status: DISABLED
+              priority: AVERAGE
+          graph_prototypes:
+            - uuid: 977f0fbc4ba64fe38feeb7b6adc45ec8
+              name: 'Temp Sensor: Unit {#UNIT} Sensor {#SENSOR}: temperature'
+              graph_items:
+                - color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'Dell N-Series by SNMP'
+                    key: 'sensor.tempSensor.temperature[boxServicesTempSensorTemperature.{#SNMPINDEX}]'
         - uuid: 40352a51e2444635af33b1e344e5adf7
           name: 'TempUnit Discovery'
           type: SNMP_AGENT
@@ -1182,18 +1204,40 @@ zabbix_export:
           lifetime: 7d
           item_prototypes:
             - uuid: 1f1ea564a4d744cd89de9b74acddc586
-              name: 'Temp Unit {#SNMPINDEX}: State'
+              name: 'Temp: Unit {#SNMPINDEX}: state'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.15.1.2.{#SNMPINDEX}'
               key: 'sensor.tempUnit.state[boxServicesTempUnitState.{#SNMPINDEX}]'
               valuemap:
                 name: 'fastpath_boxservices::BoxsTemperatureStatus'
+              tags:
+                - tag: component
+                  value: temperature
             - uuid: 9eb8847035a6450084acb439c303444d
-              name: 'Temp Unit {#SNMPINDEX}: Temperature'
+              name: 'Temp: Unit {#SNMPINDEX}: temperature'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.674.10895.5000.2.6132.1.1.43.1.15.1.3.{#SNMPINDEX}'
               key: 'sensor.tempUnit.temperature[boxServicesTempUnitTemperature.{#SNMPINDEX}]'
               units: C
+              tags:
+                - tag: component
+                  value: temperature
+          trigger_prototypes:
+            - uuid: 31b7445d0dda41d2871046d1cd2051aa
+              expression: 'count(/Dell N-Series by SNMP/sensor.tempUnit.state[boxServicesTempUnitState.{#SNMPINDEX}],#1,"ne","{$TEMP_OK_STATUS}")=1 and last(/Dell N-Series by SNMP/sensor.tempUnit.temperature[boxServicesTempUnitTemperature.{#SNMPINDEX}])>0'
+              name: 'Temp: Unit {#SNMPINDEX}: state is not normal'
+              opdata: 'Current state: {ITEM.LASTVALUE1}, temperature: {ITEM.LASTVALUE2}'
+              status: DISABLED
+              priority: AVERAGE
+          graph_prototypes:
+            - uuid: 71068babd9b842d5bfc13fcf81422a77
+              name: 'Temp: Unit {#SNMPINDEX}: temperature'
+              graph_items:
+                - color: 1A7C11
+                  calc_fnc: ALL
+                  item:
+                    host: 'Dell N-Series by SNMP'
+                    key: 'sensor.tempUnit.temperature[boxServicesTempUnitTemperature.{#SNMPINDEX}]'
       tags:
         - tag: class
           value: network
