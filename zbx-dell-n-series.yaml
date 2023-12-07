@@ -351,110 +351,23 @@ zabbix_export:
               tags:
                 - tag: component
                   value: fan
-              trigger_prototypes:
-                - uuid: fd2b440f7eb44af3af77f0fa47685174
-                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
-                  name: 'Fan {#SNMPVALUE}: Fan is in critical state'
-                  opdata: 'Current state: {ITEM.LASTVALUE1}'
-                  priority: AVERAGE
-                  description: 'Please check the fan unit'
-                  tags:
-                    - tag: scope
-                      value: availability
-                    - tag: scope
-                      value: performance
-                - uuid: 9c382a2910524f0596f99396c2c2329b
-                  expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"ne","{$FAN_OK_STATUS}")=1'
-                  name: 'Fan {#SNMPVALUE}: Fan is not in normal state'
-                  opdata: 'Current state: {ITEM.LASTVALUE1}'
-                  priority: INFO
-                  description: 'Please check the fan unit'
-                  dependencies:
-                    - name: 'Fan {#SNMPVALUE}: Fan is in critical state'
-                      expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"eq","{$FAN_CRIT_STATUS}")=1'
-                  tags:
-                    - tag: scope
-                      value: notice
-        - uuid: 8d36f927593f41d9874ea78ef0487c88
-          name: 'CPU and Memory and Flash Discovery'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.6027.3.10.1.2.9.1.1]'
-          key: module.discovery
-          delay: 1h
-          status: DISABLED
-          item_prototypes:
-            - uuid: 9b4d04754fca4a1888efa07fb3c9cd72
-              name: '#{#SNMPINDEX}: CPU utilization'
-              type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.6027.3.10.1.2.9.1.3.{#SNMPINDEX}'
-              key: 'system.cpu.util[chStackUnitCpuUtil1Min.{#SNMPINDEX}]'
-              history: 7d
-              value_type: FLOAT
-              units: '%'
-              description: |
-                MIB: F10-S-SERIES-CHASSIS-MIB
-                CPU utilization in percentage for last 1 minute.
-              tags:
-                - tag: component
-                  value: cpu
-              trigger_prototypes:
-                - uuid: d6c21a396da94b7f840e5b0a206db414
-                  expression: 'min(/Dell N-Series by SNMP/system.cpu.util[chStackUnitCpuUtil1Min.{#SNMPINDEX}],5m)>{$CPU.UTIL.CRIT}'
-                  name: '#{#SNMPINDEX}: High CPU utilization'
-                  event_name: '#{#SNMPINDEX}: High CPU utilization (over {$CPU.UTIL.CRIT}% for 5m)'
-                  opdata: 'Current utilization: {ITEM.LASTVALUE1}'
-                  priority: WARNING
-                  description: 'The CPU utilization is too high. The system might be slow to respond.'
-                  tags:
-                    - tag: scope
-                      value: performance
-            - uuid: ef931db26459489e820327734f60d11f
-              name: '#{#SNMPINDEX}: Memory utilization'
-              type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.6027.3.10.1.2.9.1.5.{#SNMPINDEX}'
-              key: 'vm.memory.util[chStackUnitMemUsageUtil.{#SNMPINDEX}]'
-              history: 7d
-              value_type: FLOAT
-              units: '%'
-              description: |
-                MIB: F10-S-SERIES-CHASSIS-MIB
-                Total memory usage in percentage.
-              tags:
-                - tag: component
-                  value: memory
-              trigger_prototypes:
-                - uuid: 38b7283d1d424dc78b92e83acefe99f3
-                  expression: 'min(/Dell N-Series by SNMP/vm.memory.util[chStackUnitMemUsageUtil.{#SNMPINDEX}],5m)>{$MEMORY.UTIL.MAX}'
-                  name: '#{#SNMPINDEX}: High memory utilization'
-                  event_name: '#{#SNMPINDEX}: High memory utilization (>{$MEMORY.UTIL.MAX}% for 5m)'
-                  priority: AVERAGE
-                  description: 'The system is running out of free memory.'
-                  tags:
-                    - tag: scope
-                      value: capacity
-                    - tag: scope
-                      value: performance
+          trigger_prototypes:
+            - uuid: f4334d3b3afc42e48c60d572b3cb8cc4
+              expression: 'count(/Dell N-Series by SNMP/sensor.fan.state[boxServicesFanItemState.{#SNMPINDEX}],#1,"ne","{$FAN_OK_STATUS}")=1 and last(/Dell N-Series by SNMP/sensor.fan.speed[boxServicesFanSpeed.{#SNMPINDEX}])>0'
+              name: 'Fan: Unit {#UNIT} Fan {#FAN}: state is not operational'
+              opdata: 'Current state: {ITEM.LASTVALUE1}, speed {ITEM.LASTVALUE2}'
+              status: DISABLED
+              priority: AVERAGE
           graph_prototypes:
-            - uuid: 02b1b7fd01da4f3099b0224578255b2a
-              name: '#{#SNMPINDEX}: CPU utilization'
+            - uuid: 49ffb3ee3f2a43d0a74cd671cfb3e6c0
+              name: 'Fan: Unit {#UNIT} Fan {#FAN}: speed'
               ymin_type_1: FIXED
-              ymax_type_1: FIXED
               graph_items:
-                - drawtype: GRADIENT_LINE
-                  color: 199C0D
+                - color: 1A7C11
+                  calc_fnc: ALL
                   item:
                     host: 'Dell N-Series by SNMP'
-                    key: 'system.cpu.util[chStackUnitCpuUtil1Min.{#SNMPINDEX}]'
-            - uuid: 405112d413284658a143e56f670b0870
-              name: '#{#SNMPINDEX}: Memory utilization'
-              ymin_type_1: FIXED
-              ymax_type_1: FIXED
-              graph_items:
-                - drawtype: GRADIENT_LINE
-                  color: 199C0D
-                  item:
-                    host: 'Dell N-Series by SNMP'
-                    key: 'vm.memory.util[chStackUnitMemUsageUtil.{#SNMPINDEX}]'
+                    key: 'sensor.fan.speed[boxServicesFanSpeed.{#SNMPINDEX}]'
         - uuid: 97ae2328c904449dbcdaa65fd52270b6
           name: 'Network interfaces discovery'
           type: SNMP_AGENT
