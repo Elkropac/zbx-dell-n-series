@@ -1304,10 +1304,8 @@ zabbix_export:
       macros:
         - macro: '{$CPU.UTIL.CRIT}'
           value: '80'
-        - macro: '{$FAN_CRIT_STATUS}'
-          value: '2'
         - macro: '{$FAN_OK_STATUS}'
-          value: '1'
+          value: '2'
         - macro: '{$ICMP_LOSS_WARN}'
           value: '20'
         - macro: '{$ICMP_RESPONSE_TIME_WARN}'
@@ -1348,18 +1346,12 @@ zabbix_export:
           value: '.*'
         - macro: '{$NET.IF.IFTYPE.NOT_MATCHES}'
           value: CHANGE_IF_NEEDED
-        - macro: '{$PSU_CRIT_STATUS}'
-          value: '2'
         - macro: '{$PSU_OK_STATUS}'
-          value: '1'
+          value: '2'
         - macro: '{$SNMP.TIMEOUT}'
           value: 5m
-        - macro: '{$TEMP_CRIT}'
-          value: '65'
-        - macro: '{$TEMP_CRIT_LOW}'
-          value: '5'
-        - macro: '{$TEMP_WARN}'
-          value: '55'
+        - macro: '{$TEMP_OK_STATUS}'
+          value: '1'
       dashboards:
         - uuid: 12c4b4bcdc004796853b6ee3f75a37c4
           name: 'Network interfaces'
