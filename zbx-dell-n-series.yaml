@@ -974,10 +974,10 @@ zabbix_export:
                   value: power
               trigger_prototypes:
                 - uuid: 64f1474f06af48d8b57b4721a75529a4
-                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
-                  name: 'PSU {#SNMPVALUE}: Power supply is in critical state'
+                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"ne","{$PSU_OK_STATUS}")=1'
+                  name: 'Power supply: Unit {#UNIT}: Power supply is not operational'
                   opdata: 'Current state: {ITEM.LASTVALUE1}'
-                  discover: NO_DISCOVER
+                  status: DISABLED
                   priority: AVERAGE
                   description: 'Please check the power supply unit for errors'
                   tags:
@@ -985,19 +985,6 @@ zabbix_export:
                       value: availability
                     - tag: scope
                       value: performance
-                - uuid: 92de32d98e5441ce92ee7e8010e9e4b7
-                  expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"ne","{$PSU_OK_STATUS}")=1'
-                  name: 'PSU {#SNMPVALUE}: Power supply is not in normal state'
-                  opdata: 'Current state: {ITEM.LASTVALUE1}'
-                  discover: NO_DISCOVER
-                  priority: INFO
-                  description: 'Please check the power supply unit for errors'
-                  dependencies:
-                    - name: 'PSU {#SNMPVALUE}: Power supply is in critical state'
-                      expression: 'count(/Dell N-Series by SNMP/sensor.psu.status[boxServicesPowSupplyItemState.{#SNMPINDEX}],#1,"eq","{$PSU_CRIT_STATUS}")=1'
-                  tags:
-                    - tag: scope
-                      value: notice
         - uuid: 58c7587ff7a946c4a138d7f6238a95c9
           name: 'Stack Unit Discovery'
           type: SNMP_AGENT
