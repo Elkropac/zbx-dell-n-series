@@ -301,7 +301,7 @@ zabbix_export:
               priority: WARNING
               description: 'SNMP is not available for polling. Please check device connectivity and SNMP settings.'
               dependencies:
-                - name: 'Unavailable by ICMP ping'
+                - name: 'ICMP: Unavailable by ICMP ping'
                   expression: 'max(/Dell N-Series by SNMP/icmpping,#3)=0'
               tags:
                 - tag: scope
