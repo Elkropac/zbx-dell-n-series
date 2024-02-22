@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2024-02-22T11:06:26Z'
+  date: '2024-02-22T11:30:14Z'
   groups:
     - uuid: 36bff6c29af64692839d077febfc7079
       name: 'Templates/Network devices'
@@ -229,6 +229,7 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 1.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.1.0
           key: vm.memory.free
+          history: 7d
           units: B
           preprocessing:
             - type: MULTIPLIER
@@ -242,11 +243,16 @@ zabbix_export:
           type: SNMP_AGENT
           snmp_oid: 1.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.2.0
           key: vm.memory.total
+          delay: 1h
+          history: 7d
           units: B
           preprocessing:
             - type: MULTIPLIER
               parameters:
                 - '1024'
+            - type: DISCARD_UNCHANGED_HEARTBEAT
+              parameters:
+                - 1d
           tags:
             - tag: component
               value: memory
@@ -254,6 +260,7 @@ zabbix_export:
           name: 'Dell N-Series: Memory used percentage'
           type: CALCULATED
           key: vm.memory.util
+          history: 7d
           value_type: FLOAT
           units: '%'
           params: '100-(last(//vm.memory.free)/last(//vm.memory.total)*100)'
@@ -348,6 +355,10 @@ zabbix_export:
               trends: '0'
               valuemap:
                 name: 'fastpath_boxservices::boxServicesFanItemState'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 - tag: component
                   value: fan
@@ -820,6 +831,10 @@ zabbix_export:
                 Reference: [IEEE 802.3 Std.], 30.3.1.1.32,aDuplexStatus.
               valuemap:
                 name: 'EtherLike-MIB::dot3StatsDuplexStatus'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 - tag: component
                   value: network
@@ -917,6 +932,10 @@ zabbix_export:
               key: 'system.process.pid[process,{#SNMPINDEX}]'
               delay: 1h
               history: 7d
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 - tag: component
                   value: cpu
@@ -974,6 +993,10 @@ zabbix_export:
               trends: '0'
               valuemap:
                 name: 'fastpath_boxservices::boxServicesPowSypplyItemState'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 1d
               tags:
                 - tag: component
                   value: power
@@ -1173,6 +1196,10 @@ zabbix_export:
               history: 7d
               valuemap:
                 name: 'fastpath_boxservices::BoxsTemperatureStatus'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 12h
               tags:
                 - tag: component
                   value: temperature
@@ -1218,6 +1245,10 @@ zabbix_export:
               history: 7d
               valuemap:
                 name: 'fastpath_boxservices::BoxsTemperatureStatus'
+              preprocessing:
+                - type: DISCARD_UNCHANGED_HEARTBEAT
+                  parameters:
+                    - 12h
               tags:
                 - tag: component
                   value: temperature
